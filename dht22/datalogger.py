@@ -24,7 +24,7 @@ dhtDevice = adafruit_dht.DHT22(board.D4)
 
 # csv creation
 headers = "Date,Time,Temperature,Humidity" + "\r\n"
-csv_file_name = "/home/pi/dht22/datalogger.csv"
+csv_file_name = "/home/pi/Desktop/dht22/datalogger.csv"
 
 # function tthat writes readings to csv
 def write_content_to_csv():
