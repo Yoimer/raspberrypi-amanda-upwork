@@ -1,3 +1,6 @@
+# please install the libraries from here
+# https://github.com/adafruit/Adafruit_CircuitPython_DHT
+
 import time
 import board
 import adafruit_dht
