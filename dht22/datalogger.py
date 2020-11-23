@@ -2,10 +2,12 @@
 # https://github.com/adafruit/Adafruit_CircuitPython_DHT
 
 # adafruit libraries
-import time
 import board
 import adafruit_dht
 
+# time libraries
+import time
+from datetime import datetime
 
 # path libraries
 import os.path
@@ -20,14 +22,30 @@ dhtDevice = adafruit_dht.DHT22(board.D4)
 
 # Date/Time/ Temperature/Humidity
 
-
-
 # csv creation
-headers = "Date,Time,Temperature °C,Humidity %" + "\r\n"
+headers = "Date,Time,Temperature,Humidity" + "\r\n"
 csv_file_name = "/home/pi/dht22/datalogger.csv"
+
+# function tthat writes readings to csv
+def write_content_to_csv():
+    print("writing content to csv!!!")
+    f = open(csv_file_name, "a+")
+    for i in range(0, len(list_to_file)):
+        print(list_to_file[i])
+        # saves each reading on csv
+        f.write(list_to_file[i])
+
+    # adds new line for next reading
+    f.write("\r\n")
+    # cleans lists for next reading
+    list_to_file.clear()
+    f.close()
 
 while True:
     try:
+        # list of values to be saved on csv
+        list_to_file = []
+
         # Print the values to the serial port
         temperature_c = dhtDevice.temperature
         temperature_f = temperature_c * (9 / 5) + 32
@@ -38,15 +56,26 @@ while True:
             )
         )
 
+        now = datetime.now()
+        date = now.strftime("%d/%m/%Y")
+        current_time = now.strftime("%H:%M:%S")
+
+        list_to_file.append(str(date) + ",")
+        list_to_file.append(str(current_time) + ",")
+        list_to_file.append(str(temperature_c) + ",")
+        list_to_file.append(str(humidity))
+        
         # checks if file already exists
         if(os.path.isfile(csv_file_name)):
             print("File exists")
+            write_content_to_csv()
         else:
             print("File does not exist")
             # creates file including headers
             f = open(csv_file_name, "a+")
             f.write(headers)
             f.close()
+            write_content_to_csv()
 
     except RuntimeError as error:
         # Errors happen fairly often, DHT's are hard to read, just keep going
@@ -56,5 +85,4 @@ while True:
     except Exception as error:
         dhtDevice.exit()
         raise error
-
     time.sleep(2.0)
