@@ -28,14 +28,32 @@ dhtDevice = adafruit_dht.DHT22(board.D4)
 
 # Date/Time/ Temperature/Humidity
 
+# folder creation
+# each month a folder will be create with the format December-2020, January-2021 etc..
+now = datetime.now()
+date = now.strftime("%d/%m/%Y")
+current_month = now.strftime('%B')
+current_year = now.strftime("%Y")
+current_time = now.strftime("%H:%M:%S")
+folder_name = current_month + '-' + current_year + '/'
+
+# checks if folder already exists
+path = "/home/pi/Desktop/dht22/"
+if not os.path.exists(path + folder_name):
+    print("Folder does not exist, creating...")
+    os.makedirs(path + folder_name)
+else:
+    print("Folder exists")
+
 # csv creation
 headers = "Date,Time,Temperature,Humidity" + "\r\n"
-csv_file_name = "/home/pi/Desktop/dht22/datalogger.csv"
+# each file will have as format 01-12-2020.csv and so on
+csv_file_name = now.strftime("%d-%m-%Y") + ".csv"
 
 # function tthat writes readings to csv
 def write_content_to_csv():
     print("writing content to csv!!!")
-    f = open(csv_file_name, "a+")
+    f = open(path + folder_name + csv_file_name, "a+")
     for i in range(0, len(list_to_file)):
         print(list_to_file[i])
         # saves each reading on csv
@@ -68,9 +86,9 @@ while True:
         elif(temperature_c >= 30.0):
             servo.angle = 180
 
-        now = datetime.now()
-        date = now.strftime("%d/%m/%Y")
-        current_time = now.strftime("%H:%M:%S")
+        # now = datetime.now()
+        # date = now.strftime("%d/%m/%Y")
+        # current_time = now.strftime("%H:%M:%S")
 
         list_to_file.append(str(date) + ",")
         list_to_file.append(str(current_time) + ",")
@@ -78,13 +96,13 @@ while True:
         list_to_file.append(str(humidity))
         
         # checks if file already exists
-        if(os.path.isfile(csv_file_name)):
+        if(os.path.isfile(path + folder_name + csv_file_name)):
             print("File exists")
             write_content_to_csv()
         else:
-            print("File does not exist")
+            print("File does not exist, creating...")
             # creates file including headers
-            f = open(csv_file_name, "a+")
+            f = open(path + folder_name + csv_file_name, "a+")
             f.write(headers)
             f.close()
             write_content_to_csv()
