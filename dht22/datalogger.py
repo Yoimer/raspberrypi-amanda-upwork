@@ -133,9 +133,4 @@ while True:
     except Exception as error:
         dhtDevice.exit()
         raise error
-    except KeyboardInterrupt:
-        pwm.ChangeDutyCycle(0) # this prevents jitter
-        pwm.stop() # stops the pwm on 17
-        GPIO.cleanup() # good practice when finished using a pin
-        print("Keyboard interrupt exception caught")
     time.sleep(2.0)
