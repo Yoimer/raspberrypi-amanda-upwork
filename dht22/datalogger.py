@@ -4,9 +4,15 @@
 # adafruit libraries
 import board
 import adafruit_dht
-import pulseio
-# pip3 install adafruit-circuitpython-motor
-from adafruit_motor import servo
+
+import RPi.GPIO as GPIO
+# setup the GPIO pin for the servo
+servo_pin = 17
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(servo_pin,GPIO.OUT)
+
+# setup PWM process
+pwm = GPIO.PWM(servo_pin,50) # 50 Hz (20 ms PWM period)
 
 # time libraries
 import time
@@ -15,8 +21,8 @@ from datetime import datetime
 # path libraries
 import os.path
 
-pwm = pulseio.PWMOut(board.D17, frequency=50)
-servo = servo.Servo(pwm, min_pulse=0, max_pulse=2000)
+# pwm = pulseio.PWMOut(board.D17, frequency=50)
+# servo = servo.Servo(pwm, min_pulse=0, max_pulse=2000)
 
 # Initial the dht device, with data pin connected to:
 dhtDevice = adafruit_dht.DHT22(board.D4)
@@ -65,6 +71,22 @@ def write_content_to_csv():
     list_to_file.clear()
     f.close()
 
+def rotate_servo_to_zero_degrees():
+    pwm.start(2) # start PWM by rotating to 0 degrees
+    print("rotate_servo_to_zero_degrees")
+    for i in range(0,3):
+        pwm.ChangeDutyCycle(2.0) # rotate to 0 degrees
+        time.sleep(0.5)
+    pwm.ChangeDutyCycle(0)
+
+def rotate_servo_to_180_degress():
+    pwm.start(12)  # start PWM by rotating to 180 degrees
+    print("rotate_servo_to_180_degress")
+    for i in range(0,3):
+        pwm.ChangeDutyCycle(12.0) # rotate to 180 degrees
+        time.sleep(0.5)
+    pwm.ChangeDutyCycle(0)
+
 while True:
     try:
         # list of values to be saved on csv
@@ -82,13 +104,9 @@ while True:
 
         # servo angle based on temperature
         if((temperature_c >= 25.0)  and (temperature_c <= 29.0)):
-            servo.angle = 0
+            rotate_servo_to_zero_degrees()
         elif(temperature_c >= 30.0):
-            servo.angle = 180
-
-        # now = datetime.now()
-        # date = now.strftime("%d/%m/%Y")
-        # current_time = now.strftime("%H:%M:%S")
+            rotate_servo_to_180_degress()
 
         list_to_file.append(str(date) + ",")
         list_to_file.append(str(current_time) + ",")
@@ -115,4 +133,9 @@ while True:
     except Exception as error:
         dhtDevice.exit()
         raise error
+    except KeyboardInterrupt:
+        pwm.ChangeDutyCycle(0) # this prevents jitter
+        pwm.stop() # stops the pwm on 17
+        GPIO.cleanup() # good practice when finished using a pin
+        print("Keyboard interrupt exception caught")
     time.sleep(2.0)
