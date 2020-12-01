@@ -4,6 +4,9 @@
 # adafruit libraries
 import board
 import adafruit_dht
+import pulseio
+# pip3 install adafruit-circuitpython-motor
+from adafruit_motor import servo
 
 # time libraries
 import time
@@ -11,6 +14,9 @@ from datetime import datetime
 
 # path libraries
 import os.path
+
+pwm = pulseio.PWMOut(board.D17, frequency=50)
+servo = servo.Servo(pwm, min_pulse=0, max_pulse=2000)
 
 # Initial the dht device, with data pin connected to:
 dhtDevice = adafruit_dht.DHT22(board.D4)
@@ -55,6 +61,12 @@ while True:
                 temperature_f, temperature_c, humidity
             )
         )
+
+        # servo angle based on temperature
+        if((temperature_c >= 25.0)  and (temperature_c <= 29.0)):
+            servo.angle = 0
+        elif(temperature_c >= 30.0):
+            servo.angle = 180
 
         now = datetime.now()
         date = now.strftime("%d/%m/%Y")
