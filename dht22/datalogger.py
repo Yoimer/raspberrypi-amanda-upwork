@@ -13,6 +13,8 @@ GPIO.setup(servo_pin,GPIO.OUT)
 
 # setup PWM process
 pwm = GPIO.PWM(servo_pin,50) # 50 Hz (20 ms PWM period)
+# Start PWM running, with value of 0 (pulse off)
+pwm.start(0)
 
 # time libraries
 import time
@@ -72,19 +74,15 @@ def write_content_to_csv():
     f.close()
 
 def rotate_servo_to_zero_degrees():
-    pwm.start(2) # start PWM by rotating to 0 degrees
-    print("rotate_servo_to_zero_degrees")
-    for i in range(0,3):
-        pwm.ChangeDutyCycle(2.0) # rotate to 0 degrees
-        time.sleep(0.5)
+    print("rotate_servo_to_zero_degrees!!")
+    pwm.ChangeDutyCycle(2+(0.0/18))
+    time.sleep(0.5)
     pwm.ChangeDutyCycle(0)
 
 def rotate_servo_to_180_degress():
-    pwm.start(12)  # start PWM by rotating to 180 degrees
-    print("rotate_servo_to_180_degress")
-    for i in range(0,3):
-        pwm.ChangeDutyCycle(12.0) # rotate to 180 degrees
-        time.sleep(0.5)
+    print("rotate_servo_to_180_degress!!")
+    pwm.ChangeDutyCycle(2+(180.0/18))
+    time.sleep(0.5)
     pwm.ChangeDutyCycle(0)
 
 while True:
