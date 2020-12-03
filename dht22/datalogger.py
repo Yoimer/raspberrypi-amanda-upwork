@@ -106,6 +106,28 @@ while True:
         elif(temperature_c >= 30.0):
             rotate_servo_to_180_degress()
 
+        # folder creation
+        # each month a folder will be create with the format December-2020, January-2021 etc..
+        now = datetime.now()
+        date = now.strftime("%d/%m/%Y")
+        current_month = now.strftime('%B')
+        current_year = now.strftime("%Y")
+        current_time = now.strftime("%H:%M:%S")
+        folder_name = current_month + '-' + current_year + '/'
+
+        # checks if folder already exists
+        path = "/home/pi/Desktop/dht22/"
+        if not os.path.exists(path + folder_name):
+            print("Folder does not exist, creating...")
+            os.makedirs(path + folder_name)
+        else:
+            print("Folder exists")
+
+        # csv creation
+        headers = "Date,Time,Temperature,Humidity" + "\r\n"
+        # each file will have as format 01-12-2020.csv and so on
+        csv_file_name = now.strftime("%d-%m-%Y") + ".csv"
+
         list_to_file.append(str(date) + ",")
         list_to_file.append(str(current_time) + ",")
         list_to_file.append(str(temperature_c) + ",")
