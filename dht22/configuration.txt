@@ -1,0 +1,7 @@
+# clone this, move to lcd and execute sudo sh install.sh, let the pi reboot
+git clone https://github.com/the-raspberry-pi-guy/lcd
+
+# when logging in execute
+i2cdetect -y 1
+
+# add the address (as seen on i2cdetect -y 1.png) on line 25 on lcddriver.py
