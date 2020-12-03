@@ -1,3 +1,8 @@
+# activate 
+sudo raspi-config, Interfacing options, active:
+P4 SPI Enable/Disable automatic loading of SPI kernel module 
+P5 I2C Enable/Disable automatic loading of I2C kernel module
+
 # clone this, move to lcd and execute sudo sh install.sh, let the pi reboot
 git clone https://github.com/the-raspberry-pi-guy/lcd
 
