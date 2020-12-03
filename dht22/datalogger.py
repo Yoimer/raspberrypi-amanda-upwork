@@ -34,29 +34,14 @@ dhtDevice = adafruit_dht.DHT22(board.D4)
 # but it will not work in CircuitPython.
 # dhtDevice = adafruit_dht.DHT22(board.D18, use_pulseio=False)
 
-# Date/Time/ Temperature/Humidity
+# display libraries
+# lcddriver.py and i2c_lib.py have to be on the root folder (in our case is dht22)
+import lcddriver
+import time
 
-# folder creation
-# each month a folder will be create with the format December-2020, January-2021 etc..
-now = datetime.now()
-date = now.strftime("%d/%m/%Y")
-current_month = now.strftime('%B')
-current_year = now.strftime("%Y")
-current_time = now.strftime("%H:%M:%S")
-folder_name = current_month + '-' + current_year + '/'
-
-# checks if folder already exists
-path = "/home/pi/Desktop/dht22/"
-if not os.path.exists(path + folder_name):
-    print("Folder does not exist, creating...")
-    os.makedirs(path + folder_name)
-else:
-    print("Folder exists")
-
-# csv creation
-headers = "Date,Time,Temperature,Humidity" + "\r\n"
-# each file will have as format 01-12-2020.csv and so on
-csv_file_name = now.strftime("%d-%m-%Y") + ".csv"
+# Load the driver and set it to "display"
+# If you use something from the driver library use the "display." prefix first
+display = lcddriver.lcd()
 
 # function tthat writes readings to csv
 def write_content_to_csv():
@@ -105,6 +90,11 @@ while True:
             rotate_servo_to_zero_degrees()
         elif(temperature_c >= 30.0):
             rotate_servo_to_180_degress()
+
+        # display readings on LCD
+        print("Writing to display")
+        display.lcd_display_string("Temp: " + str(temperature_c) + "C", 1) # Write line of text to first line of display
+        display.lcd_display_string("Humd: "+ str(humidity) + "%", 2) # Write line of text to second line of display
 
         # folder creation
         # each month a folder will be create with the format December-2020, January-2021 etc..
