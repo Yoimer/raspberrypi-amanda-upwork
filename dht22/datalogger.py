@@ -60,15 +60,34 @@ def write_content_to_csv():
 
 def rotate_servo_to_zero_degrees():
     print("rotate_servo_to_zero_degrees!!")
+    long_string(display, "Servo is 0 dgrs", 1)
     pwm.ChangeDutyCycle(2+(0.0/18))
     time.sleep(0.5)
     pwm.ChangeDutyCycle(0)
 
 def rotate_servo_to_180_degress():
     print("rotate_servo_to_180_degress!!")
+    long_string(display, "Servo is 180 dgrs", 1)
     pwm.ChangeDutyCycle(2+(180.0/18))
     time.sleep(0.5)
     pwm.ChangeDutyCycle(0)
+
+def long_string(display, text = '', num_line = 1, num_cols = 20):
+    """ 
+    Parameters: (driver, string to print, number of line to print, number of columns of your display)
+    Return: This function send to display your scrolling string.
+    """
+    if(len(text) > num_cols):
+        display.lcd_display_string(text[:num_cols],num_line)
+        time.sleep(1)
+        for i in range(len(text) - num_cols + 1):
+            text_to_print = text[i:i+num_cols]
+            display.lcd_display_string(text_to_print,num_line)
+            time.sleep(0.2)
+            time.sleep(1)
+    else:
+        display.lcd_display_string(text,num_line)
+
 
 while True:
     try:
@@ -86,15 +105,20 @@ while True:
         )
 
         # servo angle based on temperature
-        if((temperature_c >= 25.0)  and (temperature_c <= 29.0)):
+        if((temperature_c >= 25.0) and (temperature_c <= 29.0)):
             rotate_servo_to_zero_degrees()
         elif(temperature_c >= 30.0):
             rotate_servo_to_180_degress()
 
         # display readings on LCD
         print("Writing to display")
-        display.lcd_display_string("Temp: " + str(temperature_c) + "C", 1) # Write line of text to first line of display
-        display.lcd_display_string("Humd: "+ str(humidity) + "%", 2) # Write line of text to second line of display
+        long_string(display, "Temp: " + str(temperature_c) + "C", 2)
+        time.sleep(1.5)
+        long_string(display, "Humd: "+ str(humidity) + "%", 2)
+        time.sleep(1)
+
+        # display.lcd_display_string("Temp: " + str(temperature_c) + "C", 1) # Write line of text to first line of display
+        # display.lcd_display_string("Humd: "+ str(humidity) + "%", 2) # Write line of text to second line of display
 
         # folder creation
         # each month a folder will be create with the format December-2020, January-2021 etc..
