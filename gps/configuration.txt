@@ -5,3 +5,7 @@ add this line at the very end of the file
 dtoverlay=pi3-disable-bt
 
 ctrl x + Yes and reboot.
+
+execute ths gps.py script with sudo
+
+sudo python3 gps.py
