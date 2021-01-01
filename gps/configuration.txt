@@ -1,0 +1,7 @@
+in order to work with the gps, we need to remove the bluetooth:
+sudo nano /boot/config.txt
+
+add this line at the very end of the file
+dtoverlay=pi3-disable-bt
+
+ctrl x + Yes and reboot.
