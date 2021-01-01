@@ -1,3 +1,10 @@
+# pins configuration
+
+#VCC GPS ----> 1RPI (3.3V)
+#GND GPS ----> 6RPI (GND)
+#TX GPS  ----> GPIO15 RPI (RXD)
+#RX GPS  ----> GPIO14 RPI (TXD)
+
 import serial,time,pynmea2
 
 port = '/dev/serial0'
