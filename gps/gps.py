@@ -1,9 +1,9 @@
-# pins configuration
+# # pins configuration
 
-#VCC GPS ----> 1RPI (3.3V)
-#GND GPS ----> 6RPI (GND)
-#TX GPS  ----> GPIO15 RPI (RXD)
-#RX GPS  ----> GPIO14 RPI (TXD)
+# #VCC GPS ----> 1RPI (3.3V)
+# #GND GPS ----> 6RPI (GND)
+# #TX GPS  ----> GPIO15 RPI (RXD)
+# #RX GPS  ----> GPIO14 RPI (TXD)
 
 import serial,time,pynmea2
 
@@ -16,5 +16,5 @@ while True:
     print(str)
     if str.find('GGA') > 0:
         msg = pynmea2.parse(str)
-        print("  Timestamp: %s -- Lat: %s %s -- Lon: %s %s -- Altitude: %s %s -- Satellites: %s" % (msg.timestamp,msg.lat,msg.lat_dir,msg.lon,msg.lon_dir,msg.altitude,msg.altitude_units,msg.num_sats))
+        print("  Timestamp: %s -- Lat: %s %s -- Lon: %s %s -- Altitude: %s %s -- Satellites: %s" % (msg.timestamp,msg.latitude,msg.lat_dir,msg.longitude,msg.lon_dir,msg.altitude,msg.altitude_units,msg.num_sats))
     time.sleep(0.1)
