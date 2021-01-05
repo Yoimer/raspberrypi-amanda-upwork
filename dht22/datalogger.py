@@ -105,10 +105,12 @@ while True:
         )
 
         # servo angle based on temperature
-        if((temperature_c >= 25.0) and (temperature_c <= 29.0)):
+        if((temperature_c >= 24.0) and (temperature_c <= 29.0)):
             rotate_servo_to_zero_degrees()
+            degrees = 0
         elif(temperature_c >= 30.0):
             rotate_servo_to_180_degress()
+            degrees = 180
 
         # display readings on LCD
         print("Writing to display")
@@ -138,15 +140,16 @@ while True:
             print("Folder exists")
 
         # csv creation
-        headers = "Date,Time,Temperature,Humidity" + "\r\n"
+        headers = "Date,Time,Temperature,Humidity,Servo Rotation (Degrees)" + "\r\n"
         # each file will have as format 01-12-2020.csv and so on
         csv_file_name = now.strftime("%d-%m-%Y") + ".csv"
 
         list_to_file.append(str(date) + ",")
         list_to_file.append(str(current_time) + ",")
         list_to_file.append(str(temperature_c) + ",")
-        list_to_file.append(str(humidity))
-        
+        list_to_file.append(str(humidity) + ",")
+        list_to_file.append(str(degrees))
+
         # checks if file already exists
         if(os.path.isfile(path + folder_name + csv_file_name)):
             print("File exists")
