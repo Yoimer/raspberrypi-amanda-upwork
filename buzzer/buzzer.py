@@ -4,7 +4,7 @@
 from gpiozero import Buzzer
 from time import sleep
 
-buzzer = Buzzer(17)
+buzzer = Buzzer(27)
 
 while True:
     print("Buzzer is ON")
