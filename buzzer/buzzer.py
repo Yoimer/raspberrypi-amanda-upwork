@@ -1,15 +1,25 @@
 # wiring
 # https://projects.raspberrypi.org/en/projects/physical-computing/8
 
-from gpiozero import Buzzer
+#Libraries
+import RPi.GPIO as GPIO
 from time import sleep
 
-buzzer = Buzzer(27)
+#Disable warnings (optional)
+GPIO.setwarnings(False)
 
+#Select GPIO mode
+GPIO.setmode(GPIO.BCM)
+
+#Set buzzer - pin 27 as output
+buzzer = 27
+GPIO.setup(buzzer,GPIO.OUT)
+
+#Run forever loop
 while True:
-    print("Buzzer is ON")
-    buzzer.on()
-    sleep(1)
-    buzzer.off()
-    print("Buzzer is OFF")
-    sleep(1)
+    GPIO.output(buzzer,GPIO.HIGH)
+    print ("Beep")
+    sleep(0.5) # Delay in seconds
+    GPIO.output(buzzer,GPIO.LOW)
+    print ("No Beep")
+    sleep(0.5)
