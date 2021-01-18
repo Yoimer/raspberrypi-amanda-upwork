@@ -9,17 +9,17 @@ from time import sleep
 GPIO.setwarnings(False)
 
 #Select GPIO mode
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD)
 
 #Set buzzer - pin 27 as output
-buzzer = 27
+buzzer = 13
 GPIO.setup(buzzer,GPIO.OUT)
 
 #Run forever loop
 while True:
     GPIO.output(buzzer,GPIO.HIGH)
-    print ("Beep")
+    print ("Beeping")
     sleep(0.5) # Delay in seconds
     GPIO.output(buzzer,GPIO.LOW)
-    print ("No Beep")
+    print ("No Beeping")
     sleep(0.5)
