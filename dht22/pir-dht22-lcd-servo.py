@@ -48,6 +48,8 @@ import time
 # If you use something from the driver library use the "display." prefix first
 display = lcddriver.lcd()
 
+motion_status = ' '
+
 # function tthat writes readings to csv
 def write_content_to_csv():
     print("writing content to csv!!!")
@@ -108,21 +110,6 @@ def triggerbuffer():
 while True:
     try:
 
-        # pir section
-        i = GPIO.input(23)
-        if i == 0:                             #When output from motion sensor is LOW
-            print("No intruders",i)
-            GPIO.output(2, GPIO.LOW)          #Turn OFF LED
-            time.sleep(0.1)                      # Delay in seconds
-            #no beeping
-            GPIO.output(27, GPIO.LOW)
-        elif i == 1:                           #When output from motion sensor is HIGH
-            while (GPIO.input(23) == 1):
-                print("Intruder detected",i)
-                GPIO.output(2, GPIO.HIGH)      #Turn ON LED
-                time.sleep(0.1)
-                triggerbuffer();
-
         # list of values to be saved on csv
         list_to_file = []
 
@@ -135,6 +122,23 @@ while True:
                 temperature_f, temperature_c, humidity
             )
         )
+
+        # pir section
+        i = GPIO.input(23)
+        if i == 0:                             #When output from motion sensor is LOW
+            print("No intruders",i)
+            GPIO.output(2, GPIO.LOW)          #Turn OFF LED
+            time.sleep(0.1)                      # Delay in seconds
+            #no beeping
+            GPIO.output(27, GPIO.LOW)
+            motion_status = 'No Motion Detected'
+        elif i == 1:                           #When output from motion sensor is HIGH
+            while (GPIO.input(23) == 1):
+                motion_status = 'Motion Detected'
+                print("Intruder detected",i)
+                GPIO.output(2, GPIO.HIGH)      #Turn ON LED
+                time.sleep(0.1)
+                triggerbuffer();
 
         # servo angle based on temperature
         if((temperature_c >= 24.0) and (temperature_c <= 29.0)):
@@ -150,9 +154,6 @@ while True:
         time.sleep(1.5)
         long_string(display, "Humd: "+ str(humidity) + "%", 2)
         time.sleep(1)
-
-        # display.lcd_display_string("Temp: " + str(temperature_c) + "C", 1) # Write line of text to first line of display
-        # display.lcd_display_string("Humd: "+ str(humidity) + "%", 2) # Write line of text to second line of display
 
         # folder creation
         # each month a folder will be create with the format December-2020, January-2021 etc..
@@ -172,7 +173,7 @@ while True:
             print("Folder exists")
 
         # csv creation
-        headers = "Date,Time,Temperature,Humidity,Servo Rotation (Degrees)" + "\r\n"
+        headers = "Date,Time,Temperature,Humidity,Servo Rotation (Degrees),Motion Status" + "\r\n"
         # each file will have as format 01-12-2020.csv and so on
         csv_file_name = now.strftime("%d-%m-%Y") + ".csv"
 
@@ -180,7 +181,9 @@ while True:
         list_to_file.append(str(current_time) + ",")
         list_to_file.append(str(temperature_c) + ",")
         list_to_file.append(str(humidity) + ",")
-        list_to_file.append(str(degrees))
+        #list_to_file.append(str(degrees))
+        list_to_file.append(str(degrees) + ",")
+        list_to_file.append(motion_status)
 
         # checks if file already exists
         if(os.path.isfile(path + folder_name + csv_file_name)):
