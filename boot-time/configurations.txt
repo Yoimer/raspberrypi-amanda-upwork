@@ -1,0 +1,75 @@
+1) check current the path for adafruit-circuitpython-dht libraries with the next command:
+
+python3
+import adafruit_dht
+print(adafruit_dht)
+
+<module 'adafruit_dht' from '/home/pi/.local/lib/python3.7/site-packages/adafruit_dht.py'>
+
+2) those have to be deleted and installed on /usr/lib/python3/dist-packages for boot time script
+
+cd /home/pi/.local/lib/python3.7/site-packages
+sudo rm -rf 
+
+adafruit_blinka
+Adafruit_Blinka-5.13.0.dist-info
+adafruit_circuitpython_dht-3.5.4.dist-info
+adafruit_dht.py
+adafruit_platformdetect
+Adafruit_PlatformDetect-2.28.0.dist-info
+Adafruit_PureIO
+Adafruit_PureIO-1.1.8.dist-info
+analogio.py
+bin
+bitbangio.py
+board.py
+busio.py
+digitalio.py
+libraries.txt
+microcontroller
+micropython.py
+neopixel_write.py
+pulseio.py
+__pycache__
+pyftdi
+pyftdi-0.52.9.dist-info
+pyserial-3.5.dist-info
+pyusb-1.1.1.dist-info
+RPi
+RPi.GPIO-0.7.0.dist-info
+rpi_ws281x
+rpi_ws281x-4.2.5.dist-info
+_rpi_ws281x.cpython-37m-arm-linux-gnueabihf.so
+serial
+sysv_ipc-1.1.0.dist-info
+sysv_ipc.cpython-37m-arm-linux-gnueabihf.so
+usb
+
+sudo apt install libgpiod2 -y
+cd /usr/lib/python3/dist-packages
+sudo pip3 install --upgrade adafruit-circuitpython-dht -t .
+
+3) create datalogger service
+sudo nano /lib/systemd/system/datalogger.service
+
+[Unit]
+Description=Data Logger
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -u /home/pi/Desktop/dht22/pir-dht22-servo.py
+WorkingDirectory=/home/pi/Desktop/dht22
+StandardOutput=inherit
+StandardError=inherit
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+4)excute the next commands
+sudo systemctl daemon-reload
+sudo systemctl enable datalogger.service
+sudo systemctl disable datalogger.service
+sudo systemctl start datalogger.service
+sudo systemctl stop datalogger.service
+systemctl status datalogger.service
