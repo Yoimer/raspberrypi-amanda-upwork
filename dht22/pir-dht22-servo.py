@@ -40,6 +40,7 @@ dhtDevice = adafruit_dht.DHT22(board.D4)
 # dhtDevice = adafruit_dht.DHT22(board.D18, use_pulseio=False)
 
 motion_status = ' '
+degrees = 0
 
 # function tthat writes readings to csv
 def write_content_to_csv():
