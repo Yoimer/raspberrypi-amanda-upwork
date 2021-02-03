@@ -1,0 +1,38 @@
+wiring
+
+motor red cable -----------------------------------------------------------> MA1 Hat
+motor white  (or black) cable ---------------------------------------------> MA2 Hat
+
+motor red  cable ----------------------------------------------------------> MB2 Hat
+motor white (or black) cable ----------------------------------------------> MB2 Hat
+
+Power Supply (from 6VDC to 12VDC) (Carefull with this!!)
+
+4 x AA batteries = 6VDC (if each is 1.5V)
+
+Power Supply Postive Terminal (+) ------------------------------------------> VIN Hat
+Power Supply Negative Terminal (-) -----------------------------------------> GND Hat
+
+cd /usr/lib/python3/dist-packages
+sudo pip3 install --upgrade adafruit-circuitpython-motorkit -t .
+
+adapt adafruit_motorkit.py for wavesahe motor hat
+sudo nano /usr/lib/python3/dist-packages/adafruit_motorkit.py
+
+find def motor1() function and change
+return self._motor(1, (8, 9, 10), 1) to return self._motor(1, (0, 1, 2), 1)
+
+find def motor2() function and change
+return self._motor(2, (13, 11, 12), 1) to return self._motor(2, (5, 3, 4), 1)
+
+sudo raspi-config
+Then choose Interfacing Options -> I2C -> Yes -> Reboot
+
+execute python3 motor_hat.py
+
+(in case errors appear)
+
+sudo nano /etc/modules
+Append these statements to the end and save:
+i2c-dev 
+i2c-bcm2708
