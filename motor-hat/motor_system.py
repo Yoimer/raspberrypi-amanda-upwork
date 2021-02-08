@@ -6,69 +6,16 @@ import board
 import adafruit_dht
 
 import time
-from datetime import datetime
 
 # Initial the dht device, with data pin connected to:
 dhtDevice = adafruit_dht.DHT22(board.D4)
 
 #motor hat section 
-from PCA9685 import PCA9685
-import time
-
-Dir = [
-    'forward',
-    'backward',
-]
-pwm = PCA9685(0x40, debug=False)
-pwm.setPWMFreq(50)
-
-class MotorDriver():
-    def __init__(self):
-        self.PWMA = 0
-        self.AIN1 = 1
-        self.AIN2 = 2
-        self.PWMB = 5
-        self.BIN1 = 3
-        self.BIN2 = 4
-
-    def MotorRun(self, motor, index, speed):
-        if speed > 100:
-            return
-        if(motor == 0):
-            pwm.setDutycycle(self.PWMA, speed)
-            if(index == Dir[0]):
-                print ("1")
-                pwm.setLevel(self.AIN1, 0)
-                pwm.setLevel(self.AIN2, 1)
-            else:
-                print ("2")
-                pwm.setLevel(self.AIN1, 1)
-                pwm.setLevel(self.AIN2, 0)
-        else:
-            pwm.setDutycycle(self.PWMB, speed)
-            if(index == Dir[0]):
-                print ("3")
-                pwm.setLevel(self.BIN1, 0)
-                pwm.setLevel(self.BIN2, 1)
-            else:
-                print ("4")
-                pwm.setLevel(self.BIN1, 1)
-                pwm.setLevel(self.BIN2, 0)
-
-    def MotorStop(self, motor):
-        if (motor == 0):
-            pwm.setDutycycle(self.PWMA, 0)
-        else:
-            pwm.setDutycycle(self.PWMB, 0)
-
-
-Motor = MotorDriver()
+from adafruit_motorkit import MotorKit
+kit = MotorKit(0x40)
 
 while True:
     try:
-
-        # list of values to be saved on csv
-        list_to_file = []
 
         # Print the values to the serial port
         temperature_c = dhtDevice.temperature
@@ -83,22 +30,20 @@ while True:
         # motor direction based on temperature
         if((temperature_c >= 24.0) and (temperature_c <= 29.0)):
             # moves forward
-            print("Forward 2 s")
-            Motor.MotorRun(0, 'forward', 100)
-            Motor.MotorRun(1, 'forward', 100)
-            time.sleep(2)
-            print("Stopping motors")
-            Motor.MotorStop(0)
-            Motor.MotorStop(1)
+            kit.motor1.throttle = 1.0
+            kit.motor2.throttle = 1.0
+            print("Forward")
+            time.sleep(2.0)
+            kit.motor1.throttle = 0.0
+            kit.motor2.throttle = 0.0
         elif(temperature_c >= 30.0):
             # moves backward
-            print("Backward 2 s")
-            Motor.MotorRun(0, 'backward', 100)
-            Motor.MotorRun(1, 'backward', 100)
-            time.sleep(2)
-            print("Stopping motors")
-            Motor.MotorStop(0)
-            Motor.MotorStop(1)
+            kit.motor1.throttle = -0.75
+            kit.motor2.throttle = -0.75
+            print("Backward")
+            time.sleep(2.0)
+            kit.motor1.throttle = 0.0
+            kit.motor2.throttle = 0.0
 
     except RuntimeError as error:
         # Errors happen fairly often, DHT's are hard to read, just keep going
