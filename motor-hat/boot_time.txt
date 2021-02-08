@@ -1,3 +1,4 @@
+//motor system
 sudo nano /lib/systemd/system/motorsystem.service
 
 [Unit]
@@ -22,3 +23,32 @@ sudo systemctl disable motorsystem.service
 sudo systemctl start motorsystem.service
 sudo systemctl stop motorsystem.service
 systemctl status motorsystem.service
+
+
+// simpletest
+sudo nano /lib/systemd/system/simpletest.service
+[Unit]
+Description=Simple Test on DTH22
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -u /home/pi/Desktop/dht22/simpletest.py
+WorkingDirectory=/home/pi/Desktop/dht22
+StandardOutput=inherit
+StandardError=inherit
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+
+
+4)excute the next commands
+sudo systemctl daemon-reload
+sudo systemctl enable simpletest.service
+sudo systemctl disable simpletest.service
+sudo systemctl start simpletest.service
+sudo systemctl stop simpletest.service
+systemctl status simpletest.service
+
+//remove the service using this
+sudo rm /lib/systemd/system/simpletest.service
