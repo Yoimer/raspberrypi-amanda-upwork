@@ -83,19 +83,19 @@ while True:
         # motor direction based on temperature
         if((temperature_c >= 24.0) and (temperature_c <= 29.0)):
             # moves forward
-            print("Forward 5 s")
+            print("Forward 2 s")
             Motor.MotorRun(0, 'forward', 100)
             Motor.MotorRun(1, 'forward', 100)
-            time.sleep(5)
+            time.sleep(2)
             print("Stopping motors")
             Motor.MotorStop(0)
             Motor.MotorStop(1)
         elif(temperature_c >= 30.0):
             # moves backward
-            print("Backward 5 s")
+            print("Backward 2 s")
             Motor.MotorRun(0, 'backward', 100)
             Motor.MotorRun(1, 'backward', 100)
-            time.sleep(5)
+            time.sleep(2)
             print("Stopping motors")
             Motor.MotorStop(0)
             Motor.MotorStop(1)
@@ -103,9 +103,9 @@ while True:
     except RuntimeError as error:
         # Errors happen fairly often, DHT's are hard to read, just keep going
         print(error.args[0])
-        time.sleep(5.0)
+        time.sleep(4.0)
         continue
     except Exception as error:
         dhtDevice.exit()
         raise error
-    time.sleep(5.0)
+    time.sleep(4.0)
