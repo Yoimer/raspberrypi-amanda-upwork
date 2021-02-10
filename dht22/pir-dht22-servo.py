@@ -107,7 +107,8 @@ while True:
             GPIO.output(27, GPIO.LOW)
             motion_status = 'No Motion Detected'
         elif i == 1:                           #When output from motion sensor is HIGH
-            while (GPIO.input(23) == 1):
+            # while (GPIO.input(23) == 1):
+            if(GPIO.input(23) == 1):
                 motion_status = 'Motion Detected'
                 print("Intruder detected",i)
                 GPIO.output(2, GPIO.HIGH)      #Turn ON LED
